@@ -1,0 +1,49 @@
+{
+    "input": {
+        "url": "https://www.straitstimes.com/singapore/courts-crime/maid-who-stabbed-employer-more-than-90-times-says-she-was-repeatedly-raped-by",
+        "file": "articles/article_01.txt",
+        "folder": "today_articles/",
+        "titles": "today_titles.txt",
+        "urls": "today_urls.txt"
+    },
+
+    "paths": {
+        "data": "data/",
+        "model": "facebook/bart-large-cnn"
+    },
+
+    "params": {
+        "num_words": 200,
+        "summary_length": 0.3,
+        "num_beams": 4,
+        "no_repeat_ngram_size": 3,
+        "repetition_penalty": 1.2,
+        "length_penalty": 1.2,
+        "min_length_buffer": 20,
+        "max_length_buffer": 20,
+        "early_stopping": true,
+        "do_sample": false,
+        "top_k": 50,
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "use_cache": true
+    },
+
+    "output": {
+        "file": "summaries/summary_01.txt",
+        "folder": "today_summaries/"
+    },
+
+    "scraping": {
+        "site": "today",
+        "folder": "today_articles/",
+        "num_articles": 1000,
+        "num_pages": 10,
+        "run_all": false
+    },
+
+    "summarisation": {
+        "write_to_file": true,
+        "run_all": true
+    }
+}
