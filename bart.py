@@ -134,9 +134,10 @@ if __name__ == '__main__':
         run_all()
         
     else:
-        output = summarise()
+        path = data_path+config['input']['file']
+        output = summarise(path)
         
-        if config['write_to_file']:
+        if config['summarisation']['write_to_file']:
             filename = data_path+config['output']['file']
             with open(filename, 'w') as f:
                 f.write(output)
