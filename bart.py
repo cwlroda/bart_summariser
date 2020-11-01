@@ -54,6 +54,7 @@ def summarise(path):
             top_p = config['params']['top_p']
             temperature = config['params']['temperature']
             use_cache = config['params']['use_cache']
+            num_return_sequences = config['params']['num_return_sequences']
             
             min_length = num_words - min_length_buffer
             max_length = num_words + max_length_buffer
@@ -76,7 +77,8 @@ def summarise(path):
                                          top_k=top_k,
                                          top_p=top_p,
                                          temperature=temperature,
-                                         use_cache=use_cache
+                                         use_cache=use_cache,
+                                         num_return_sequences=num_return_sequences
                                         )
             
             output = [tokenizer.decode(i,
@@ -98,10 +100,10 @@ def run_all():
     files = os.listdir(dir)
     article_num = 1
     
-    titles_file = config['input']['titles']
-    urls_file = config['input']['urls']
-    titles = open(data_path+titles_file).readlines()
-    urls = open(data_path+urls_file).readlines()
+    titles_file = data_path+config['input']['titles']
+    urls_file = data_path+config['input']['urls']
+    titles = open(titles_file).readlines()
+    urls = open(urls_file).readlines()
     
     for file, title, url in zip(files, titles, urls):
         try:
