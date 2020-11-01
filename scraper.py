@@ -12,7 +12,42 @@ with open('config.json', 'r') as file:
     config = json.load(file)
 data_path = config['paths']['data']
 
-def scrape_cna(config):
+def cna_helper(article_num, url, article_total):
+    try:
+        article_name = "article_{:04d}".format(article_num)
+        print(">>> Processing: {}/{}".format(article_num, article_total), end='\r')
+    
+        article = Article(url, "english")
+        article.download()
+        
+        parser = etree.HTMLParser()
+        tree = etree.parse(StringIO(article.html), parser).getroot()
+        result = ''
+        
+        for div in tree.iter('div'):
+            if 'class' in div.attrib and 'c-rte--article' in div.attrib['class']:
+                for p in div.iter('p'):
+                    result += etree.tostring(p, method="html").decode("utf-8")
+                break
+        
+        article.html = result 
+        article.parse()
+
+        body = article.text
+        words = body.split()
+        text = ' '.join(words)
+    
+    except:
+        print(">>> Broken link, skipping URL {}".format(article_num))
+        return
+    
+    out_dir = data_path+config['scraping']['folder']
+    filename = "{}{}.txt".format(out_dir, article_name)
+    
+    with open(filename, 'w') as f:
+        f.write(text)
+
+def scrape_cna():
     url = 'https://kkwfbq38xf-dsn.algolia.net/1/indexes/cna-EZrqV5Hx/query?x-algolia-agent=Algolia%20for%20JavaScript%20(3.33.0)%3B%20Browser&x-algolia-application-id=KKWFBQ38XF&x-algolia-api-key=504d2f0996dac6611337bfcde2392960'
 
     data = {
@@ -58,47 +93,50 @@ def scrape_cna(config):
         for url in urls:
             f.write(url+'\n')
 
+    article_total = len(urls)
     article_num = 1
 
     for url in urls:
-        article_name = "article_{:04d}".format(article_num)
-        print(">>> Processing: {}/{}".format(article_num, len(urls)), end='\r')
-        
-        try:
-            article = Article(url, "english")
-            article.download()
-            
-            parser = etree.HTMLParser()
-            tree = etree.parse(StringIO(article.html), parser).getroot()
-            result = ''
-            
-            for div in tree.iter('div'):
-                if 'class' in div.attrib and 'c-rte--article' in div.attrib['class']:
-                    for p in div.iter('p'):
-                        result += etree.tostring(p, method="html").decode("utf-8")
-                    break
-            
-            article.html = result 
-            article.parse()
-
-            body = article.text
-            words = body.split()
-            text = ' '.join(words)
-        
-        except:
-            print(">>> Broken link, skipping URL {}".format(article_num))
-            continue
-        
-        out_dir = data_path+config['scraping']['folder']
-        filename = "{}{}.txt".format(out_dir, article_name)
-        
-        with open(filename, 'w') as f:
-            f.write(text)
-        
+        cna_helper(article_num, url, article_total)
         article_num += 1    
 
-    print("\n>>> Completed: {}/{}".format(article_num-1, len(urls)))
+    print("\n>>> Completed: {}/{}".format(article_num-1, article_total))
+
+def st_helper(article_num, url, article_total):
+    try:
+        article_name = "article_{:04d}".format(article_num)
+        print(">>> Processing: {}/{}".format(article_num, article_total), end='\r')
     
+        article = Article(url, "english")
+        article.download()
+        
+        parser = etree.HTMLParser()
+        tree = etree.parse(StringIO(article.html), parser).getroot()
+        result = ''
+        
+        for div in tree.iter('div'):
+            if 'class' in div.attrib and 'odd field-item' in div.attrib['class']:
+                for p in div.iter('p'):
+                    result += etree.tostring(p, method="html").decode("utf-8")
+                break
+        
+        article.html = result 
+        article.parse()
+
+        body = article.text
+        words = body.split()
+        text = ' '.join(words)
+    
+    except:
+        print(">>> Broken link, skipping URL {}".format(article_num))
+        return
+    
+    out_dir = data_path+config['scraping']['folder']
+    filename = "{}{}.txt".format(out_dir, article_name)
+    
+    with open(filename, 'w') as f:
+        f.write(text)
+
 def scrape_st():
     main_url = 'https://www.straitstimes.com/singapore/courts-crime?page='
     num_pages = config['scraping']['num_pages']
@@ -138,46 +176,45 @@ def scrape_st():
         titles_file.write(title+'\n')
         url_file.write(url+'\n')
 
+    article_total = len(urls)
     article_num = 1
 
     for url in urls:
-        article_name = "article_{:04d}".format(article_num)
-        print(">>> Processing: {}/{}".format(article_num, len(urls)), end='\r')
-        
-        try:
-            article = Article(url, "english")
-            article.download()
-            
-            parser = etree.HTMLParser()
-            tree = etree.parse(StringIO(article.html), parser).getroot()
-            result = ''
-            
-            for div in tree.iter('div'):
-                if 'class' in div.attrib and 'odd field-item' in div.attrib['class']:
-                    for p in div.iter('p'):
-                        result += etree.tostring(p, method="html").decode("utf-8")
-                    break
-            
-            article.html = result 
-            article.parse()
-
-            body = article.text
-            words = body.split()
-            text = ' '.join(words)
-        
-        except:
-            print(">>> Broken link, skipping URL {}".format(article_num))
-            continue
-        
-        out_dir = data_path+config['scraping']['folder']
-        filename = "{}{}.txt".format(out_dir, article_name)
-        
-        with open(filename, 'w') as f:
-            f.write(text)
-        
+        st_helper(article_num, url, article_total)
         article_num += 1    
 
-    print("\n>>> Completed: {}/{}".format(article_num-1, len(urls)))
+    print("\n>>> Completed: {}/{}".format(article_num-1, article_total))
+
+def today_helper(article_num, body, article_total):
+    try:
+        article_name = "article_{:04d}".format(article_num)
+        print(">>> Processing: {}/{}".format(article_num, article_total), end='\r')
+        
+        parser = etree.HTMLParser()
+        tree = etree.parse(StringIO(body), parser).getroot()
+        result = ''
+        
+        for p in tree.iter('p'):
+            result += etree.tostring(p, method="html").decode("utf-8")
+        
+        article = Article(i['node']['node_url'])
+        article.download()
+        article.html = result
+        article.parse()
+        
+        body = article.text
+        words = body.split()
+        text = ' '.join(words)
+    
+    except:
+        print(">>> Broken link, skipping URL {}".format(article_num))
+        return
+    
+    out_dir = data_path+config['scraping']['folder']
+    filename = "{}{}.txt".format(out_dir, article_name)
+
+    with open(filename, 'w') as f:
+        f.write(text)
 
 def scrape_today():
     url = 'https://www.todayonline.com/api/v3/news_feed/119811?&items='
@@ -198,43 +235,15 @@ def scrape_today():
         titles.append(i['node']['title'])
         urls.append(i['node']['node_url'])
     
+    article_total = len(data['nodes'])
     article_num = 1
     
     for i in data['nodes']:
-        try:
-            article_name = "article_{:04d}".format(article_num)
-            print(">>> Processing: {}/{}".format(article_num, len(urls)), end='\r')
-            
-            body = i['node']['body']
-            parser = etree.HTMLParser()
-            tree = etree.parse(StringIO(body), parser).getroot()
-            result = ''
-            
-            for p in tree.iter('p'):
-                result += etree.tostring(p, method="html").decode("utf-8")
-            
-            article = Article(i['node']['node_url'])
-            article.download()
-            article.html = result
-            article.parse()
-            
-            body = article.text
-            words = body.split()
-            text = ' '.join(words)
-        
-        except:
-            print(">>> Broken link, skipping URL {}".format(article_num))
-            continue
-        
-        out_dir = data_path+config['scraping']['folder']
-        filename = "{}{}.txt".format(out_dir, article_name)
-    
-        with open(filename, 'w') as f:
-            f.write(text)
-        
+        body = i['node']['body']
+        today_helper(article_num, body, article_total)
         article_num += 1
 
-    print("\n>>> Completed: {}/{}".format(article_num-1, len(urls)))
+    print("\n>>> Completed: {}/{}".format(article_num-1, article_total))
     
     titles_file = data_path+'today_titles.txt'
     with open(titles_file, 'w') as f:
@@ -246,6 +255,28 @@ def scrape_today():
         for url in urls:
             f.write(url+'\n')
 
+def url_scraper():
+    file = data_path+config['scraping']['urls']
+    urls = open(file).read().split()
+    site = config['scraping']['site']
+    
+    article_total = len(urls)
+    article_num = 1
+
+    for url in urls:
+        try:
+            if site == 'cna': cna_helper(article_num, url, article_total)
+            elif site == 'st': st_helper(article_num, url, article_total)
+            elif site == 'today': raise NotImplementedError('Function not implemented')
+            
+            article_num += 1
+        
+        except NotImplementedError as e:
+            print(">>> {}".format(e))
+            return
+
+    print("\n>>> Completed: {}/{}".format(article_num-1, len(urls)))
+
 if __name__ == '__main__':
     if not nltk.data.find('tokenizers/punkt'):
         nltk.download('punkt')
@@ -256,8 +287,10 @@ if __name__ == '__main__':
         scrape_today()
     
     else:
-        site = config['scraping']['site']
-        if site == 'cna': scrape_cna()
-        elif site == 'st': scrape_st()
-        elif site == 'today': scrape_today()
+        mode = config['scraping']['mode']
+        
+        if mode == 'cna': scrape_cna()
+        elif mode == 'st': scrape_st()
+        elif mode == 'today': scrape_today()
+        elif mode == 'txt': url_scraper()
 
