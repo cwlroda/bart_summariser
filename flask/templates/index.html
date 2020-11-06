@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300|Open+Sans:300|Oxygen|Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <h2>BART Summariser</h2>
+    <div class="">
+        <div class="row">
+            <div class="col-sm-1"></div>
+
+            <div class="col-sm-10">
+                <h4> Input Text </h4>
+                <textarea class="form-control txt_input" id="txt_input"></textarea>
+                <h4> Parameters </h4>
+
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <label for="size">Length of summary</label>
+                        <select id="size" class="form-control">
+                            <option value="first" selected>Number of words</option>
+                            <option value="second">Percentage of article</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="form-group" id="first">
+                            <label for="max_words" id="label_max_words">100 words</label>
+                            <input type="range" class="custom-range" min="50" max="500" value="100" step="50" id="max_words">
+                        </div>
+                        <div class="form-group" id="second" style="display:none">
+                            <label for="percentage" id="label_percentage">30%</label>
+                            <input type="range" class="custom-range" min="5" max="50" value="30" step="5" id="percentage">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="max_buffer" id="label_max_buffer">Max length buffer: 20</label>
+                        <input type="range" class="custom-range" min="5" max="50" value="20" step="5" id="max_buffer">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="min_buffer" id="label_min_buffer">Min length buffer: 20</label>
+                        <input type="range" class="custom-range" min="5" max="50" value="20" step="5" id="min_buffer">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="num_beams" id="label_num_beams">Beam search level: 4</label>
+                        <input type="range" class="custom-range" min="1" max="20" value="4" step="1" id="num_beams">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="ngram_size" id="label_ngram_size">Non-repeating ngrams size: 3</label>
+                        <input type="range" class="custom-range" min="1" max="10" value="3" step="1" id="ngram_size">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="file" id="upload" hidden>
+                        <label for="upload" class="btn btn-primary btn-lg btn-block"><i class="fa fa-upload"></i> Upload text file</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <span id="file-chosen"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="repetition_penalty" id="label_repetition_penalty">Repetition penalty:</label>
+                        <input type="text" value="1.2" id="repetition_penalty">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="length_penalty" id="label_length_penalty">Length penalty:</label>
+                        <input type="text" value="1.2" id="length_penalty">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <button type="button" class="btn btn-primary btn-lg btn-block" id="btn-process">Generate</button>
+                    </div>
+
+                </div>
+
+                <h4> Summary </h4>
+                <textarea class="form-control txt_summary" id="input_summary" readonly> </textarea>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="download" id="label_download"></label>
+                        <button class="btn btn-primary btn-lg btn-block" id='download'><i class="fa fa-download"></i> Download summary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
