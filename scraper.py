@@ -197,7 +197,7 @@ def today_helper(article_num, body, article_total):
         for p in tree.iter('p'):
             result += etree.tostring(p, method="html").decode("utf-8")
         
-        article = Article(i['node']['node_url'])
+        article = Article(body)
         article.download()
         article.html = result
         article.parse()
