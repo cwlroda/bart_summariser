@@ -86,7 +86,7 @@ def summarise(path):
                                        clean_up_tokenization_spaces=False
                                       ) for i in summary_ids]
             end = time.time()
-            print(">>> Time taken: {:.2f}s".format(end-start))
+            print(">>> Time taken: {:.2f}s".format(end - start))
             return output[0]
             
         else:
@@ -96,24 +96,24 @@ def summarise(path):
         print(str(ex))
 
 def run_all():
-    dir = data_path+config['input']['folder']
+    dir = data_path + config['input']['folder']
     files = os.listdir(dir)
     article_num = 1
     
-    titles_file = data_path+config['input']['titles']
-    urls_file = data_path+config['input']['urls']
+    titles_file = data_path + config['input']['titles']
+    urls_file = data_path + config['input']['urls']
     titles = open(titles_file).readlines()
     urls = open(urls_file).readlines()
     
     for file, title, url in zip(files, titles, urls):
         try:
-            path = dir+file
+            path = dir + file
             article_name = "summary_{:04d}".format(article_num)
             
             print(">>> Summary {}".format(article_num))
             output = summarise(path)
             
-            out_dir = data_path+config['output']['folder']
+            out_dir = data_path + config['output']['folder']
             filename = "{}{}.txt".format(out_dir, article_name)
             with open(filename, 'w') as f:
                 f.write(title)
@@ -136,11 +136,11 @@ if __name__ == '__main__':
         run_all()
         
     else:
-        path = data_path+config['input']['file']
+        path = data_path + config['input']['file']
         output = summarise(path)
         
         if config['summarisation']['write_to_file']:
-            filename = data_path+config['output']['file']
+            filename = data_path + config['output']['file']
             with open(filename, 'w') as f:
                 f.write(output)
             
@@ -148,4 +148,3 @@ if __name__ == '__main__':
         
         else:
             print(output)
-
