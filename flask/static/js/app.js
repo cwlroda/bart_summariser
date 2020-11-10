@@ -7,7 +7,13 @@ jQuery(document).ready(function() {
 
     function getFile(event) {
         const input = event.target
-        if ('files' in input && input.files.length > 0) {
+
+        var filePath = input.value;
+        var allowedExtensions = /(\.txt)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type! Only .txt files are supported.');
+        } else if ('files' in input && input.files.length > 0) {
             placeFileContent(
                 document.getElementById('txt_input'),
                 input.files[0])
@@ -34,7 +40,9 @@ jQuery(document).ready(function() {
             var text = document.getElementById('input_summary').value;
             var filename = 'summary.txt';
 
-            download(filename, text);
+            if (text !== '') {
+                download(filename, text);
+            }
         }, false)
 
     function download(filename, text) {

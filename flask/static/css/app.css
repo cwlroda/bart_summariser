@@ -55,3 +55,27 @@ h4 {
 #write_to_file {
     margin-top: 15px !important;
 }
+
+#tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+#tooltip #tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: #1462dc;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 7px 7px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    left: 115%;
+}
+
+#tooltip:hover #tooltiptext {
+    visibility: visible;
+}

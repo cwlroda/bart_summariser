@@ -50,6 +50,6 @@ def generate():
         return app.response_class(response=json.dumps(res), status=500, mimetype='application/json')
 
 if __name__ == '__main__':
-    app.run(debug=False,
+    app.run(debug=True,
             port=8000,
             use_reloader=False)
