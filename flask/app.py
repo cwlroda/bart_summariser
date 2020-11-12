@@ -10,6 +10,7 @@ def init(request):
     config = json.load(file)
     
     config['input']['text'] = request.json['input_text']
+    config['input']['documents'] = request.json['documents']
     config['params']['num_words'] = int(request.json['num_words'])
     config['params']['summary_length'] = float(request.json['percentage'])/100
     config['params']['num_beams'] = int(request.json['num_beams'])
@@ -35,11 +36,13 @@ def generate():
     try:
         init(request)
         summariser = Bart()
-        output = summariser.run()
+        
+        output, documents = summariser.run()
         
         response = {}
         response['response'] = {
-            'summary': str(output)
+            'summary': str(output),
+            'documents': documents
         }
         
         return flask.jsonify(response)

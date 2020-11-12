@@ -1,6 +1,7 @@
 {
     "input": {
-        "text": ""
+        "text": "",
+        "documents": []
     },
     "paths": {
         "model": "facebook/bart-large-cnn"

@@ -1,28 +1,57 @@
 var data = []
 var token = ""
+var documents = []
+var summaries = []
 
 jQuery(document).ready(function() {
     document.getElementById('upload')
         .addEventListener('change', getFile)
 
     function getFile(event) {
-        const input = event.target
+        document.getElementById('txt_input').value = ''
+        var input = event.target
 
-        var filePath = input.value;
-        var allowedExtensions = /(\.txt)$/i;
+        if (input.files.length == 1) {
+            var filePath = input.value;
+            var allowedExtensions = /(\.txt)$/i;
 
-        if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file type! Only .txt files are supported.');
-        } else if ('files' in input && input.files.length > 0) {
-            placeFileContent(
-                document.getElementById('txt_input'),
-                input.files[0])
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Invalid file type! Only .txt files are supported.');
+            } else {
+                placeFileContent(
+                    document.getElementById('txt_input'),
+                    input.files[0])
+            }
         }
+
+        else {
+            for (var i = 0; i < input.files.length; i++) {
+                var filePath = input.files[i].name;
+                var allowedExtensions = /(\.txt)$/i;
+
+                if (!allowedExtensions.exec(filePath)) {
+                    alert('Invalid file type! Only .txt files are supported.');
+                } else {
+                    document.getElementById('txt_input').value += input.files[i].name + '\n';
+                    appendFileContent(
+                        documents,
+                        input.files[i])
+                }
+            }
+        }
+    }
+
+    function appendFileContent(target, file) {
+        readFileContent(file).then(content => {
+            target.push(content)
+            $('#label_files').text(documents.length + ' file(s) uploaded')
+        }).catch(error => console.log(error))
     }
 
     function placeFileContent(target, file) {
         readFileContent(file).then(content => {
             target.value = content
+            $('#label_files').text('1 file(s) uploaded')
         }).catch(error => console.log(error))
     }
 
@@ -37,11 +66,21 @@ jQuery(document).ready(function() {
 
     document.getElementById('download')
         .addEventListener('click', function() {
-            var text = document.getElementById('input_summary').value;
-            var filename = 'summary.txt';
+            if (summaries.length) {
+                for (var i = 1; i < summaries.length+1; i++){
+                    var filename = 'summary' + i + '.txt';
 
-            if (text !== '') {
-                download(filename, text);
+                    if (summaries[i-1] !== '') {
+                        download(filename, summaries[i-1]);
+                    }
+                }
+            } else {
+                var text = document.getElementById('input_summary').value;
+                var filename = 'summary.txt';
+
+                if (text !== '') {
+                    download(filename, text);
+                }
             }
         }, false)
 
@@ -93,7 +132,11 @@ jQuery(document).ready(function() {
     })
 
     $('#btn-process').on('click', function() {
-        input_text = $('#txt_input').val()
+        if (documents.length) {
+            input_text = ""
+        } else {
+            input_text = $('#txt_input').val()
+        }
 
         if (option.val() == 'first') {
             num_words = $('#max_words').val()
@@ -117,6 +160,7 @@ jQuery(document).ready(function() {
             dataType: "json",
             data: JSON.stringify({
                 "input_text": input_text,
+                "documents": documents,
                 "num_words": num_words,
                 "percentage": percentage,
                 "num_beams": num_beams,
@@ -128,10 +172,19 @@ jQuery(document).ready(function() {
             }),
             beforeSend: function() {
                 $('#input_summary').val('Loading...')
+                $('#label_files').text('')
+                documents = []
+                summaries = []
             },
         }).done(function(jsondata, textStatus, jqXHR) {
             console.log(jsondata)
-            $('#input_summary').val(jsondata['response']['summary'])
+
+            if (jsondata['response']['documents'].length) {
+                summaries = jsondata['response']['documents']
+                $('#input_summary').val('Done')
+            } else {    
+                $('#input_summary').val(jsondata['response']['summary'])
+            }
         }).fail(function(jsondata, textStatus, jqXHR) {
             alert(jsondata['responseJSON']['message'])
         });

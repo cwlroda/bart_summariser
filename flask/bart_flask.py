@@ -85,8 +85,19 @@ class Bart():
         self.model.to(self.device)
         self.model.eval()
         
-        article = self.config['input']['text']
-        output = self.summarise(article)
+        summaries = []
+        documents = self.config['input']['documents']
+        
+        if len(documents) > 0:
+            for document in documents:
+                summary = self.summarise(document)
+                summaries.append(summary)
             
-        return output
+            output = ''
+
+        else:
+            article = self.config['input']['text']
+            output = self.summarise(article)
+                
+        return output, summaries
 
