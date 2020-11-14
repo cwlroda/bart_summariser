@@ -32,11 +32,15 @@
                 <h4> Basic Parameters </h4>
                 <div class="form-row">
                     <div class="col-md-3">
-                        <label for="size">Length of summary</label>
+                        <label for="size">Length of summary
+                            <span id="tooltip"> ⓘ
+                                <span id="tooltiptext">Note that the values indicated are only an estimate. The model will decide the exact number of words based on sentence structure.</span>
+                            </span>
+                        </label>
                         <select id="size" class="form-control">
-                                <option value="first" selected>Number of words</option>
-                                <option value="second">Percentage of article</option>
-                            </select>
+                            <option value="first" selected>Number of words</option>
+                            <option value="second">Percentage of article</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-3">
                         <div class="form-group" id="first">
@@ -101,7 +105,7 @@
                         <input type="text" value="1.2" id="repetition_penalty">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="length_penalty" id="label_length_penalty">Length penalty:</label>
+                        <label for="length_penalty" id="label_length_penalty">Sentence length penalty:</label>
                         <span id="tooltip"> ⓘ 
                             <span id="tooltiptext">Penalty based on length of generated summary. Larger values encourage the model to generate longer summaries, and vice versa. A value of 1.0 means there is no penalty.</span>
                         </span> &nbsp&nbsp
@@ -113,7 +117,7 @@
                 </div>
 
                 <h4> Output Summary </h4>
-                <textarea class="form-control txt_summary" id="input_summary" rows="5" readonly></textarea>
+                <textarea class="form-control txt_summary" id="input_summary" rows="5" placeholder="Click generate summary to display output" readonly></textarea>
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="download" id="label_download"></label>

@@ -1,7 +1,7 @@
 import json
 import flask
 from flask import Flask, request, render_template
-from .bart_flask import Bart
+from core.bart_flask import Bart
 
 app = Flask(__name__)
 

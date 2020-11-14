@@ -30,9 +30,13 @@ h4 {
 #num_beams,
 #ngram_size,
 #max_buffer,
-#min_buffer,
+#min_buffer {
+    margin-top: 7px !important;
+}
+
 #repetition_penalty,
 #length_penalty {
+    width: 20%;
     margin-top: 7px !important;
 }
 
