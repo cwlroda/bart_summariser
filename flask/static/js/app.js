@@ -22,9 +22,7 @@ jQuery(document).ready(function() {
                     document.getElementById('txt_input'),
                     input.files[0])
             }
-        }
-
-        else {
+        } else {
             for (var i = 0; i < input.files.length; i++) {
                 var filePath = input.files[i].name;
                 var allowedExtensions = /(\.txt)$/i;
@@ -67,11 +65,11 @@ jQuery(document).ready(function() {
     document.getElementById('download')
         .addEventListener('click', function() {
             if (summaries.length) {
-                for (var i = 1; i < summaries.length+1; i++){
+                for (var i = 1; i < summaries.length + 1; i++) {
                     var filename = 'summary' + i + '.txt';
 
-                    if (summaries[i-1] !== '') {
-                        download(filename, summaries[i-1]);
+                    if (summaries[i - 1] !== '') {
+                        download(filename, summaries[i - 1]);
                     }
                 }
             } else {
@@ -173,7 +171,6 @@ jQuery(document).ready(function() {
             beforeSend: function() {
                 $('#input_summary').val('Loading...')
                 $('#label_files').text('')
-                documents = []
                 summaries = []
             },
         }).done(function(jsondata, textStatus, jqXHR) {
@@ -181,10 +178,12 @@ jQuery(document).ready(function() {
 
             if (jsondata['response']['documents'].length) {
                 summaries = jsondata['response']['documents']
-                $('#input_summary').val('Done')
-            } else {    
+                $('#input_summary').val('Generated ' + summaries.length + '/' + documents.length + ' summaries')
+            } else {
                 $('#input_summary').val(jsondata['response']['summary'])
             }
+
+            documents = []
         }).fail(function(jsondata, textStatus, jqXHR) {
             alert(jsondata['responseJSON']['message'])
         });

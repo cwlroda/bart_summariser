@@ -11,7 +11,7 @@ h2 {
     font-size: 30px;
     text-align: center;
     width: 100%;
-    background: #1462dc;
+    background: #004e7c;
     padding: 25px 25px;
     line-height: 30px;
     color: white;
@@ -21,24 +21,8 @@ h4 {
     margin-top: 20px;
 }
 
-.input-group-text.positive {
-    background-color: #c5ffdb !important;
-}
-
-.input-group-text.negative {
-    background-color: #fddddd !important;
-}
-
 .row {
     margin-top: 10px;
-}
-
-.txt_input {
-    height: 300px !important;
-}
-
-.txt_summary {
-    height: 150px !important;
 }
 
 #max_words,
@@ -59,13 +43,12 @@ h4 {
 #tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
 }
 
 #tooltip #tooltiptext {
     visibility: hidden;
     width: 300px;
-    background-color: #1462dc;
+    background-color: #004e7c;
     color: #fff;
     text-align: center;
     border-radius: 6px;
@@ -78,4 +61,23 @@ h4 {
 
 #tooltip:hover #tooltiptext {
     visibility: visible;
+}
+
+.btn {
+    border-radius: 12px;
+    border-color: #004e7c;
+    background-color: #004e7c;
+}
+
+.btn:hover {
+    background-color: #0070b1
+}
+
+a {
+    color: white;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #0070b1
 }

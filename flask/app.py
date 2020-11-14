@@ -1,7 +1,7 @@
 import json
 import flask
 from flask import Flask, request, render_template
-from bart_flask import Bart
+from .bart_flask import Bart
 
 app = Flask(__name__)
 
@@ -53,6 +53,6 @@ def generate():
         return app.response_class(response=json.dumps(res), status=500, mimetype='application/json')
 
 if __name__ == '__main__':
-    app.run(debug=True,
+    app.run(debug=False,
             port=8000,
             use_reloader=False)
